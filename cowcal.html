@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang = "th">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title> ระบบคำนวณต้นทุนและปริมาณการให้อาหารโคนม </title>
+</head>
+
+<style>
+ 	*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	}
+	body{
+	min-height: 100vh;
+	padding: 20px;
+	}
+	.container{
+	max-width: 1200px;
+	margin: 0 auto;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.95);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	}
+	.header{
+	background: #48a54b;
+	color: white;
+	text-align: center;
+	padding: 30px;
+	font-size: 1.3rem;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+	.content{
+	padding: 30px;
+	}
+	.form-section{
+	background: #f8f9fa;
+	border-radius: 15px;
+	padding: 20px;
+	margin-bottom: 30px;
+	border-left: 5px solid #ffb1c8;
+	}
+	.form-section h2{
+	color: #333;
+	margin-bottom: 15px;
+	font-size: 1.7rem;
+	}
+	.form-row{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	}
+	.form-group{
+	display: flex;
+	flex-direction: column;
+	}
+	.form-group label{
+	margin: 10px 0;
+	font-weight: bold;
+	color: #555;
+	}
+	.form-group p{
+	margin-bottom: 10px;
+	color: #555;
+	}
+
+	.form-group h3{
+	font: 2.5rem;
+	margin: 10px 0;
+	color: black;
+	}
+	.form-group input{
+	padding: 10px;
+	border: 2px solid #ddd;
+	}
+	.sub{
+	background: #48a54b;
+	color: white;
+	padding: 15px 30px;
+	border: none;
+	border-radius: 25px;
+	font-size: 1.2rem;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 5px 15px rgba(76,175,80, 0.3);
+	}
+	.sub:hover{
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(76,175,80, 0.4);
+	}
+	.sos{
+	background: #fff3cd;
+	color: #856404;
+	padding: 15px;
+	border-radius: 10px;
+	border-left: 4px solid #ffc107;
+	margin-bottom: 20px;
+	}
+	.ans{
+	background: #fff;
+	border-radius: 15px;
+	padding: 25px;
+	margin-top: 30px;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+	display: none;
+	}
+	.ans h2{
+	color: #48a54b;
+	margin-bottom: 20px;
+	font-size: 2.5rem;
+	}
+	.cowneed-grid{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 25px;
+	margin-bottom: 30px;
+	}
+	.cowneed-card {
+    	background: #f8f9fa;
+    	border-radius: 15px;
+    	padding: 20px;
+    	border-left: 5px solid #ffb1c8;
+	}
+	.cowneed-card h3{
+    	color: #333;
+    	margin-bottom: 30px
+	}
+	.feedsum{
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	overflow: hidden;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+	.feedsum th, .feedsum td{
+	border: 1px solid #ddd;
+	padding: 10px;
+	text-align: center;
+	color: #333;
+	}
+	.feedsum th{
+	background-color: #f2f2f2;
+	font-weight: bold;
+	}
+	.feedsum tbody tr:nth-child(even) {
+  	background-color: #f9f9f9;
+	}
+	.feedsum tbody tr:hover {
+  	background-color: #f1f1f1; 
+  	transition: background-color 0.3s ease; 
+	}
+	.sumcost {
+  	margin-top: 25px;
+ 	background-color: #fff3cd; 
+  	padding: 25px; 
+  	border-radius: 10px;
+  	color: #856404;
+  	font-size: 1.2rem; 
+  	font-weight: bold; 
+  	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  	text-align: center; 
+	}
+	.sumcost div {
+  	margin-bottom: 10px;
+	}
+	.ansbabe{
+	background: #fff;
+	border-radius: 15px;
+	padding: 25px;
+	margin-top: 30px;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+	display: none;
+	}
+	#ansbabe {
+	margin: 25px;
+	text-align: center;
+	background-color: #FF4C4C; 
+  	border-radius: 10px;
+  	color: white;
+  	font-size: 1.2rem; 
+  	font-weight: bold; 
+
+
+	}
+
+	.credit{
+	background: #48a54b;
+	color: white;
+	text-align: center;
+	padding: 35px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+	
+
+</style>
+
+<body>
+	<div class = "container">
+		<div class = "header">
+			<h1> ระบบคำนวณต้นทุนและปริมาณการให้อาหารโคนม </h1>
+		</div>
+		<div class ="content">
+			<form id = "cowinfo">
+				<div class = "form-section">
+					<h2> ข้อมูลโคนม </h2>
+					<div class = "form-row">
+						<div class = "form-group">
+							<label for ="age"> อายุ (เดือน) </label>
+							<p>นับจากวันเกิด เศษของจำนวนวัน ตั้งแต่ 15 วันขึ้นไป ให้นับเป็น 1 เดือน หากไม่ถึง 15 วันให้ถือว่ายังไม่ครบ 1 เดือน</p>
+							<input type = "number" id = "age" min = "1" max = "4800" required>
+						</div>
+					</div>
+					<div class = "form-row">
+						<div class = "form-group">
+							<label for ="girth"> รอบอก (เซนติเมตร) </label>
+							<p> วัดโดยใช้สายวัดพันรอบบริเวณหลังขาหน้าทั้งสอง </p>
+							<input type = "number" id = "girth" min = "1" step = "0.1" required>
+						</div>
+					</div>
+					<div class = "form-row">
+						<div class = "form-group">
+							<label for ="cpreg"> ช่วงวัยของโคนม </label>
+							<select id = "cpreg" required> 
+								<option value = "baby"> ลูกโคแรกเกิด (อายุน้อยกว่า 3 เดือน)</option>
+								<option value = "child"> โคหย่านมถึงโคสาว (อายุ 3-18 เดือน)</option>
+								<option value = "teen"> โคสาว (ไม่เคยท้อง/ท้องครั้งแรก และ อายุ 18 เดือนขึ้นไป)</option>
+								<option value = "milk"> โคท้องถึงรีดนม </option>
+								<option value = "nomilk"> โคดราย/โคหยุดรีดนม </option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class = "form-section">
+					<h2> ข้อมูลอาหาร </h2>
+					<div class = "sos"> <strong> คำแนะนำ: </strong> เลือกวัตถุดิบที่ต้องการเพื่อคำนวณปริมาณให้เหมาะสม
+					</div>
+						<div class = "form-row">
+							<div class = "form-group">
+								<h3>กรุณาเลือกอาหารข้น</h3>
+								<label>
+								<input type = "radio" name = "sud" id="sud1" required> สูตรที่ 1 (กากมัน, อาหารสำเร็จ, กากถั่วเหลือง, รำกลาง)
+								</label>
+								<label>
+								<input type = "radio" name = "sud" id="sud2"> สูตรที่ 2 (กากมัน, อาหารสำเร็จ)
+								</label>
+								<label>
+								<input type = "radio" name = "sud" id="sud3"> สูตรที่ 3 (อาหารสำเร็จ, กากถั่วเหลือง)
+								</label>
+								<label>
+								<input type = "radio" name = "sud" id="sud4"> สูตรที่ 4 (กากมัน, อาหารสำเร็จ, รำกลาง)
+								</label>
+								<label>
+								<input type = "radio" name = "sud" id="sud5"> สูตรที่ 5 (อาหารสำเร็จ, กากถั่วเหลือง, รำกลาง)
+								</label>
+							</div>
+							<div class = "form-group">
+								<h3>กรุณาเลือกอาหารหยาบ</h3>
+								<label>
+								<input type = "radio" name = "foodyab" id="grnepia" required> หญ้าเนเปียร์
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="grlucy"> หญ้ารูซี่
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="grpurple"> หญ้ากินนีสีม่วง
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="grtin"> ใบกระถิน
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="aaoy"> ใบอ้อย
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="hay"> ฟางข้าว
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="corn"> เปลือกข้าวโพด
+								</label>
+								<label>
+								<input type = "radio" name = "foodyab" id="pineapple"> เปลือกสับปะรด
+								</label>
+
+
+							</div>
+						</div>
+				</div>
+		<div style = "text-align: center;">
+		<button type = "submit" class = "sub"> คำนวณโภชนาการ </button>
+		</div>
+		</div>
+		</form>
+	<div id = "ans" class = "ans">
+		<h2> ผลการคำนวณสารอาหาร </h2>
+			<div class ="cowneed-grid">
+				<div class = "cowneed-card">
+				<h3> น้ำหนัก </h3>
+				<div id = "weight"></div>
+				</div>
+				<div class = "cowneed-card">
+				<h3> ปริมาณอาหารข้นที่ต้องการ </h3>
+				<div id = "konneed"></div>
+				</div>
+				<div class = "cowneed-card">
+				<h3> ปริมาณอาหารหยาบที่ต้องการ </h3>
+				<div id = "yabneed"></div>
+				</div>
+			</div>
+		<div id = "ansbabe" class = "ansbabe">
+		</div>
+		<table id = "feedtable" class = "feedsum">
+			<thead>
+				<tr>
+					<th> สูตรอาหาร </th>
+					<th> ปริมาณ (กก./วัน) </th>
+					<th> ราคา (บาท) </th>
+					<th>ปริมาณโปรตีน (กก.)</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+
+		<div class = "sumcost">
+			<div id = "totalcost">
+			</div>
+			<div id = "sumpro">
+			</div>
+		</div>
+
+	</div>
+	
+		<div class = "credit">
+			เว็บไซต์นี้เป็นส่วนประกอบของโครงงานคณิตศาสตร์ ระดับมัธยมศึกษาตอนปลาย เนื่องในการประกวดโครงงานคณิตศาสตร์ ประจำปี 2568 จัดโดย สมาคมคณิตศาสตร์แห่งประเทศไทย ในพระบรมราชูถัมภ์ <br>
+			จัดทำโดย นางสาววริศรา อินทร์เรืองศร, นางสาวกชพรรณ ลิมป์ปัทมปาณี, นางสาวเขมจิรา วิทิตกุล, นางสาวชมชนก นนทกรชยางกูร <br><br>
+			โรงเรียนสุรนารีวิทยา
+		</div>
+	<script>
+		document.getElementById('cowinfo').addEventListener('submit', function(e){
+		e.preventDefault();
+		CalcFood();
+		});
+		function CalcFood(){
+		const cowage = parseInt(document.getElementById('age').value);
+		const cowgi = parseFloat(document.getElementById('girth').value);
+		const cowstat = document.getElementById('cpreg').value;
+		const cowweight = CalcWe(cowage, cowgi);
+		const realyab = getsudyab();
+		const realkon = getsudkon();
+		const fed = CalcFed(cowweight);
+		const [kon, yab] = konandyab(fed, cowstat);
+		const conclusion = feed(kon, yab, realyab, realkon);
+		
+		weresults(cowweight, kon, yab);
+		foodresults(conclusion, cowstat);
+		}
+
+		function weresults(cowweight, kon, yab){
+
+		document.getElementById('ans').style.display = 'block';
+		document.getElementById('ans').scrollIntoView({behavior: 'smooth'});
+      		document.getElementById("weight").textContent = cowweight.toFixed(2) + " กิโลกรัม";
+      		document.getElementById("konneed").textContent = kon.toFixed(2) + " กิโลกรัม/ตัว/วัน";
+		document.getElementById("yabneed").textContent = yab.toFixed(2) + " กิโลกรัม/ตัว/วัน";
+
+
+		
+		}
+		function foodresults(conclusion, cowstat, cowage){
+			let tbody = document.querySelector("#feedtable tbody");
+			tbody.innerHTML = "";
+			const cost = {
+	  		กากมัน: 0.20,
+			อาหารสำเร็จโปรตีนร้อยละ16: 11.13,
+			อาหารสำเร็จโปรตีนร้อยละ21: 13.27,
+	 		กากถั่วเหลือง: 13,
+			รำกลาง: 6,
+			หญ้าเนเปียร์: 2,
+			หญ้ารูซี่: 2,
+			หญ้ากินนีสีม่วง: 2.5,
+			ใบกระถิน: 4,
+			ใบอ้อย: 1,
+	  		ฟางข้าว: 1,
+			เปลือกข้าวโพด: 1,
+	  		เปลือกสับปะรด: 5
+			};
+			const prop = {
+	  		กากมัน: 0.03,
+			อาหารสำเร็จโปรตีนร้อยละ16: 0.16,
+			อาหารสำเร็จโปรตีนร้อยละ21: 0.21,
+	 		กากถั่วเหลือง: 0.48,
+			รำกลาง: 0.14,
+			หญ้าเนเปียร์: 0.101,
+			หญ้ารูซี่: 0.085,
+			หญ้ากินนีสีม่วง: 0.074,
+			ใบกระถิน: 0.244,
+			ใบอ้อย: 0.044,
+	  		ฟางข้าว: 0.0276,
+			เปลือกข้าวโพด: 0.126,
+	  		เปลือกสับปะรด: 0.0069 
+			};
+			let sumcost = 0, sumprotein = 0;
+			for (let key in conclusion) {
+				let row = document.createElement("tr");
+				let ingredient = document.createElement("td");
+				let needs = document.createElement("td");
+				let price = document.createElement("td");
+				let protein = document.createElement("td");
+
+				ingredient.textContent = key;
+				needs.textContent = conclusion[key];
+
+				let pricesperkg = cost[key] || 0;
+				let proteinperkg = prop[key] || 0;
+				const amount = parseFloat(conclusion[key]);
+				let ingcost = pricesperkg*amount;
+				let ingprop = proteinperkg*amount;
+				sumcost += ingcost;
+				sumprotein += ingprop;
+
+				price.textContent = ingcost.toFixed(2);
+				protein.textContent = ingprop.toFixed(2);
+				if(ingcost === 0){
+				continue;
+				}else{
+				row.appendChild(ingredient);
+				row.appendChild(needs);
+				row.appendChild(price);
+				row.appendChild(protein);
+
+				tbody.appendChild(row);
+				}
+	}
+		document.getElementById('totalcost').textContent = "ค่าใช้จ่ายรวมต่อวัน: " + sumcost.toFixed(2) + " บาท/ตัว/วัน";
+		document.getElementById('sumpro').textContent = "ปริมาณโปรตีนที่ได้รับ: " + sumprotein.toFixed(2) + " กิโลกรัม/ตัว/วัน";
+		if(cowstat === 'baby' || cowage < 3){
+		document.getElementById('ansbabe').style.display = 'block';
+		document.getElementById("ansbabe").textContent = "คำเตือน!! ไม่ควรให้อาหารข้นและอาหารหยาบ กรุณาให้น้ำนมจนกว่าโคนมจะอายุ 3 เดือน";
+		}else{
+		
+		document.getElementById('ansbabe').style.display = 'none';
+		}
+}
+		function getsudkon() {
+			let realkon;
+  			const radios = document.getElementsByName('sud');
+  			for (let i = 0; i < radios.length; i++) {
+    				if (radios[i].checked) {
+      				realkon = radios[i].id;
+				break;
+    				}
+  			}
+			return realkon;
+		}
+		function getsudyab() {
+			let realyab;
+  			const radios = document.getElementsByName('foodyab');
+  			for (let i = 0; i < radios.length; i++) {
+    				if (radios[i].checked) {
+				realyab = radios[i].id;
+      				break;
+    				}
+  			}
+			return realyab;
+		}
+
+
+		function CalcWe(cowage, cowgi){
+		const we = 0.445 + (8.995*cowage) + (1.262*cowgi);
+		return we;
+		}
+		function CalcFed(we){
+		const fedperday = 0.1*we;
+		return fedperday;
+		}
+		function konandyab(fedperday, cowstat){
+		let kon, yab;
+			if(cowstat === 'baby'){
+			kon = 0;
+			yab = 0;
+			}else if(cowstat === 'nomilk' || cowstat === 'teen'){
+			kon = 0.3*fedperday;
+			yab = 0.7*fedperday;
+			}else{
+			kon = 0.4*fedperday;
+			yab = 0.6*fedperday;
+			}
+		return [kon, yab];
+		}
+		function feed(kon, yab, realyab, realkon, cowstat){
+		let man = 0, ins16 = 0, ins21 = 0, nut = 0, rice = 0, nepia = 0, lucy = 0, purple = 0, tin = 0, aoy = 0, hhay = 0, ccorn = 0, pine = 0;
+			if(cowstat === 'nomilk'){
+				if(realkon === 'sud1'){
+					man = kon*(8/12.15);
+					ins16 = kon*(2/12.15);
+					nut = kon*(2/12.15);
+					rice = kon*(0.15/12.15);
+					}else if(realkon === 'sud2'){
+					man = kon*(8/10);
+					ins16 = kon*(2/10);
+					}else if(realkon === 'sud3'){
+					nut = kon*(8/10);
+					ins16 = kon*(2/10);
+					}else if(realkon === 'sud4'){
+					man = kon*(8/10.15);
+					ins16 = kon*(2/10.15);
+					rice = kon*(0.15/10.15);
+					}else if(realkon === 'sud5'){
+					nut = kon*(8/10.15);
+					ins16 = kon*(2/10.15);
+					rice = kon*(0.15/10.15);
+					}
+			}else{
+				if(realkon === 'sud1'){
+					man = kon*(8/12.15);
+					ins21 = kon*(2/12.15);
+					nut = kon*(2/12.15);
+					rice = kon*(0.15/12.15);
+					}else if(realkon === 'sud2'){
+					man = kon*(8/10);
+					ins21 = kon*(2/10);
+					}else if(realkon === 'sud3'){
+					nut = kon*(8/10);
+					ins21 = kon*(2/10);
+					}else if(realkon === 'sud4'){
+					man = kon*(8/10.15);
+					ins21 = kon*(2/10.15);
+					rice = kon*(0.15/10.15);
+					}else if(realkon === 'sud5'){
+					nut = kon*(8/10.15);
+					ins21 = kon*(2/10.15);
+					rice = kon*(0.15/10.15);
+					}
+			}
+			if(realyab === 'grnepia'){
+				nepia = yab;
+				}else if(realyab === 'grlucy'){
+				lucy = yab;
+				}else if(realyab === 'grpurple'){
+				purple = yab;
+				}else if(realyab === 'grtin'){
+				tin = yab;
+				}else if(realyab === 'aaoy'){
+				aoy = yab;
+				}else if(realyab === 'hay'){
+				hhay = yab;
+				}else if(realyab === 'corn'){
+				ccorn = yab;
+				}else if(realyab === 'pineapple'){
+				pine = yab;
+				}	
+			return {
+			กากมัน: man.toFixed(2),
+			อาหารสำเร็จโปรตีนร้อยละ16: ins16.toFixed(2),
+			อาหารสำเร็จโปรตีนร้อยละ21: ins21.toFixed(2),
+			กากถั่วเหลือง: nut.toFixed(2),
+			รำกลาง: rice.toFixed(2),
+			หญ้าเนเปียร์: nepia.toFixed(2),
+			หญ้ารูซี่: lucy.toFixed(2),
+			หญ้ากินนีสีม่วง: purple.toFixed(2),
+			ใบกระถิน: tin.toFixed(2),
+			ใบอ้อย: aoy.toFixed(2),
+			ฟางข้าว: hhay.toFixed(2),
+			เปลือกข้าวโพด: ccorn.toFixed(2),
+			เปลือกสับปะรด: pine.toFixed(2)
+			};
+			}
+		
+	</script>
+		
+</body>
+</html>
