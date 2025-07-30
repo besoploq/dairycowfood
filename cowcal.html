@@ -348,7 +348,7 @@
 		const realyab = getsudyab();
 		const realkon = getsudkon();
 		const fed = CalcFed(cowweight);
-		const [kon, yab] = konandyab(fed, cowstat);
+		const [kon, yab] = konandyab(fed, cowstat, cowage);
 		const conclusion = feed(kon, yab, realyab, realkon);
 		
 		weresults(cowweight, kon, yab);
@@ -473,9 +473,9 @@
 		const fedperday = 0.1*we;
 		return fedperday;
 		}
-		function konandyab(fedperday, cowstat){
+		function konandyab(fedperday, cowstat, cowage){
 		let kon, yab;
-			if(cowstat === 'baby'){
+			if(cowstat === 'baby' || cowage < 3){
 			kon = 0;
 			yab = 0;
 			}else if(cowstat === 'nomilk' || cowstat === 'teen'){
